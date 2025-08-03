@@ -62,6 +62,19 @@ class TestProductPrice(unittest.TestCase):
         self.product.price = 120.0
         self.assertEqual(self.product.price, 120.0)
 
+    def test_add_two_products(self) -> None:
+        product_1 = Product("Тестовый Товар 1", "Описание 1", 100, 5)
+        product_2 = Product("Тестовый Товар 2", "Описание 2", 200, 10)
+        total = product_1 + product_2
+        self.assertEqual(total, 100.0 * 5 + 200.0 * 10)
+
+    def add_products_with_different_type_prices(self) -> None:
+        product_1 = Product("Тестовый Товар 1", "Описание 1", 100, 5)
+        product_2 = Product("Тестовый Товар 2", "Описание 2", 200.5, 10)
+        total = product_1 + product_2
+        self.assertEqual(total, 100 * 5 + 200.5 * 10)
+
+
 
 if __name__ == "__main__":
     unittest.main()
