@@ -8,7 +8,7 @@ T = TypeVar("T", bound="Product")
 class Category:
 
     def count_unique_products(self) -> int:
-        return len(self.products)
+        return len(self.__products)
 
     total_categories = 0
     total_products = 0
@@ -29,6 +29,10 @@ class Category:
 
     def __repr__(self) -> str:
         return f"Category('{self.name}', товаров: {len(self.products)})"
+
+    def __str__(self) -> str:
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f"{self.name}, количество продуктов: {total_quantity} шт."
 
     @property
     def products(self) -> List[Product]:

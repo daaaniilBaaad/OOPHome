@@ -1,58 +1,3 @@
-# import unittest
-# from src.product import Product
-# from src.category import Category
-#
-#
-# class TestCategory(unittest.TestCase):
-#
-#
-#     def setUp(self):
-#         self.product1 = Product("Product1", "Description1", 100, 5)
-#         self.product2 = Product("Product2", "Description2", 200, 3)
-#         self.products = [self.product1, self.product2]
-#         self.category = Category("Electronics", "Electronic products", self.products)
-#
-#     def tearDown(self):
-#         Category.total_categories = 0
-#         Category.total_products = 0
-#
-#     def test_initialization(self):
-#         self.assertEqual(self.category.name, "Electronics")
-#         self.assertEqual(self.category.description, "Electronic products")
-#         self.assertEqual(len(self.category.products), 2)
-#         self.assertEqual(Category.total_categories, 1)
-#         self.assertEqual(Category.total_products, 2)
-#
-#     def test_add_product(self):
-#         product3 = Product("Product3", "Description3", 300, 1)
-#         self.category.add_product(product3)
-#         self.assertEqual(len(self.category.products), 3)
-#         self.assertEqual(Category.total_products, 3)
-#
-#     def test_add_invalid_product(self):
-#         with self.assertRaises(TypeError):
-#             self.category.add_product("Not a product")
-#
-#     def test_count_unique_products(self):
-#         self.assertEqual(self.category.count_unique_products(), 2)
-#
-#     def test_products_property(self):
-#         self.assertEqual(self.category.products, self.products)
-#
-#     def test_products_setter(self):
-#         new_products = [self.product1]
-#         self.category.products = new_products
-#         self.assertEqual(self.category.products, new_products)
-#         self.assertEqual(Category.total_products, 2)
-#
-#     def test_repr(self):
-#         self.assertEqual(repr(self.category), "Category('Electronics', товаров: 2)")
-#
-#
-# if __name__ == "__main__":
-#     unittest.main()
-
-
 from typing import Any
 
 import pytest
@@ -91,7 +36,7 @@ def test_add_product_to_empty_category(empty_category: Category, sample_product:
     assert Category.total_products == 1
 
 
-def test_add_product_to_non_empty_category(category_with_products: Category, sample_product: Product) -> None:
+def test_add_product_to_non_empty_category(category_with_products: Category) -> None:
     """Тестирует добавление продукта в непустую категорию."""
     initial_count = len(category_with_products.products)
     initial_total = Category.total_products
@@ -162,3 +107,24 @@ def test_add_product_invalid_type(empty_category: Category, invalid_value: Any) 
 
     assert "только объекты класса Product" in str(exc_info.value)
     assert len(empty_category.products) == 0
+
+
+class TestCategoryStr:
+
+    def test_empty_category(self) -> None:
+        category = Category("Пустая категория", "Без товаров", [])
+        assert str(category) == "Пустая категория, количество продуктов: 0 шт."
+
+    def test_single_product(self) -> None:
+        product = Product("Телефон", "Смартфон", 60000, 10)
+        category = Category("Электроника", "Гаджеты", [product])
+        assert str(category) == "Электроника, количество продуктов: 10 шт."
+
+    def test_multiple_products(self) -> None:
+        products = [
+            Product("Тестовый товар 1", "Описание 1", 100, 1),
+            Product("Тестовый товар 2", "Описание 2", 200, 2),
+            Product("Тестовый товар 3", "Описание 3", 300, 3)
+        ]
+        category = Category("Техника", "Разное", products)
+        assert str(category) == "Техника, количество продуктов: 6 шт."
