@@ -18,6 +18,10 @@ pip install -r requirements.txt
 
 Класс Product хранит информацию о товаре: название, описание, цену и количество на складе.
 
+Добавлен абстрактный класс BaseProduct
+
+Добавлен миксин ('MixinLog')
+
 ### Класс Category:
 
 Класс Category хранит информацию о категории товаров, включая список товаров.
@@ -38,9 +42,9 @@ Name                Stmts   Miss  Cover
 src\__init__.py         0      0   100%
 src\category.py        30      3    90%
 src\lawn_grass.py      13      1    92%
-src\product.py         37      9    76%
+src\product.py         54     10    81%
 src\smartphone.py      14      1    93%
 src\utils.py           15      0   100%
 ---------------------------------------
-TOTAL                 109     14    87%
+TOTAL                 126     15    88%
 
