@@ -1,8 +1,10 @@
+import logging
 import unittest
 from io import StringIO  # для перехвата вывода в консоль
 from typing import Any
 from unittest.mock import patch
 
+from src.product import MixinLog
 from src.product import Product
 
 
@@ -65,16 +67,73 @@ class TestProductPrice(unittest.TestCase):
     def test_add_two_products(self) -> None:
         product_1 = Product("Тестовый Товар 1", "Описание 1", 100, 5)
         product_2 = Product("Тестовый Товар 2", "Описание 2", 200, 10)
-        total = product_1 + product_2
+        total = product_1.add(product_2)
         self.assertEqual(total, 100.0 * 5 + 200.0 * 10)
 
     def add_products_with_different_type_prices(self) -> None:
         product_1 = Product("Тестовый Товар 1", "Описание 1", 100, 5)
         product_2 = Product("Тестовый Товар 2", "Описание 2", 200.5, 10)
-        total = product_1 + product_2
+        total = product_1.add(product_2)
         self.assertEqual(total, 100 * 5 + 200.5 * 10)
 
+
+class TestBaseProductAndMixinLog(unittest.TestCase):
+    def setUp(self) -> None:
+        self.log_stream = StringIO()
+        handler = logging.StreamHandler(self.log_stream)
+        logging.basicConfig(level=logging.INFO, handlers=[handler])
+
+        MixinLog._created_objects = set()
+
+    def test_mixin_log(self) -> None:
+
+        with self.assertLogs("root", level="INFO") as cm:
+            Product("Тестовый продукт", "Описание", 1010.0, 5)
+
+        self.assertTrue(any("Создан объект класса Product" in message for message in cm.output))
+
+    def test_base_product_abstract_method(self) -> None:
+
+        product = Product("Тестовый продукт", "Описание", 1010.0, 5)
+        self.assertEqual(product.get_info(), "Тестовый продукт, цена: 1010.0 руб.")
+
+    def test_product_creation(self) -> None:
+
+        product = Product("Смартфон", "смартфон Samsung", 50000.0, 7)
+
+        self.assertEqual(product.name, "Смартфон")
+        self.assertEqual(product.description, "смартфон Samsung")
+        self.assertEqual(product.price, 50000.0)
+        self.assertEqual(product.quantity, 7)
+
+    def test_price_validation_setter(self) -> None:
+
+        product = Product("Смартфон", "смартфон Samsung", 50000.0, 7)
+
+        with patch("builtins.print") as mock_print:
+            product.price = -100
+            mock_print.assert_called_with("Цена не может быть отрицательной или равной нулю")
+            self.assertEqual(product.price, 50000.0)
+
+        with patch("builtins.input", return_value="n"):
+            with patch("builtins.print") as mock_print:
+                product.price = 10000.0
+                mock_print.assert_called_with("Цена не изменена")
+                self.assertEqual(product.price, 50000.0)
+
+            product.price = 65000.0
+            self.assertEqual(product.price, 65000.0)
+
+    def test_add_method(self) -> None:
+
+        product_1 = Product("Смартфон", "смартфон Samsung", 50000.0, 7)
+        product_2 = Product("Чехол", "чехол Samsung", 1500.0, 3)
+
+        total = product_1.add(product_2)
+        self.assertEqual(total, 50000.0 * 7 + 1500.0 * 3)
 
 
 if __name__ == "__main__":
     unittest.main()
+
+# , mock_input: Any
