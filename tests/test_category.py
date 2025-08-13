@@ -1,6 +1,7 @@
 from typing import Any
 
 import pytest
+import unittest
 
 from src.category import Category
 from src.product import Product
@@ -128,3 +129,38 @@ class TestCategoryStr:
         ]
         category = Category("Техника", "Разное", products)
         assert str(category) == "Техника, количество продуктов: 6 шт."
+
+
+class TestAveragePrice(unittest.TestCase):
+    def setUp(self) -> None:
+        self.product_1 = Product('Тестовый товар 1', 'Описание 1', 100.0, 1)
+        self.product_2 = Product('Тестовый товар 2', 'Описание 2', 200.0, 2)
+        self.product_3 = Product('Тестовый товар 3', 'Описание 3', 300.0, 3)
+        self.zero_price_product = Product('Тестовый товар 4', 'Без цены', 0.0, 4)
+
+    def test_empty_category(self) -> None:
+        empty_category = Category('Пустая категория', 'Без товаров', [])
+        self.assertEqual(empty_category.average_price(), 0.0)
+
+    def test_single_product(self) -> None:
+        category = Category('Один товар', 'Категория', [self.product_1])
+        self.assertEqual(category.average_price(), 100.0)
+
+    def test_multiple_products(self) -> None:
+        category = Category('Много товаров', 'Категория',
+                            [self.product_1, self.product_2, self.product_3])
+        expected_average = (100.0 + 200.0 + 300.0) / 3
+        self.assertEqual(category.average_price(), expected_average)
+
+    def test_zero_price_product(self) -> None:
+        category = Category('Без цены', 'Категория', [self.zero_price_product])
+        self.assertEqual(category.average_price(), 0.0)
+
+    def test_mixed_products(self) -> None:
+        category = Category('Смешанный набор', 'Категория', [self.product_1, self.zero_price_product])
+        expected_average = (100.0 + 0.0) / 2
+        self.assertEqual(category.average_price(), expected_average)
+
+
+if __name__ == '__main__':
+    unittest.main()
