@@ -40,11 +40,11 @@ pip install -r requirements.txt
 Name                Stmts   Miss  Cover
 ---------------------------------------
 src\__init__.py         0      0   100%
-src\category.py        30      3    90%
+src\category.py        36      3    92%
 src\lawn_grass.py      13      1    92%
-src\product.py         54     10    81%
+src\product.py         56     10    82%
 src\smartphone.py      14      1    93%
 src\utils.py           15      0   100%
 ---------------------------------------
-TOTAL                 126     15    88%
+TOTAL                 134     15    89%
 

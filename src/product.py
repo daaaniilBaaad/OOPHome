@@ -27,6 +27,8 @@ class MixinLog:
 
 class Product(MixinLog, BaseProduct):
     def __init__(self, name: str, description: str, price: float, quantity: int):
+        if quantity <= 0:
+            raise ValueError("Количество товара должно быть положительным числом")
         super().__init__()
         self.name = name
         self.description = description
